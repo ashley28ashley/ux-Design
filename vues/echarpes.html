@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="../assets/images/logo.png" alt="">
+        </div> 
+        <div class="navbar">
+            
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#">Echarpes</a></li>
+                    <li><a href="#A-propos">A-propos</a></li>
+                    <li><a href="#Echarpes">Echarpes</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#promos">Promos</a></li>
+                    <li><a href="#FAQ">FAQ</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container"> 
+        <div class="hero2">
+        </div>
+    </div>
+
+    <div class="center-text"><h6 class="section-title"> Echarpes </h6></div>
+
+     
+   <!-- Slider -->
+    <div class="slider-container">
+        <div class="nav-arrow left" id="prev">&lt;</div>
+        <div class="nav-arrow right" id="next">&gt;</div>
+
+        <div class="slider-track" id="slider-track">
+            <!-- Les produits seront ajoutés ici dynamiquement -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 MyWebsite. All rights reserved.</p>
+    </footer>
+
+    <script>
+        let currentPage = 1;
+        const sliderTrack = document.getElementById('slider-track');
+
+        // Fonction pour charger les produits
+        function loadProducts(page = 1) {
+            fetch(`../backend/api.php?page=${page}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data || !data.products) {
+                        console.error('Données incorrectes:', data);
+                        return;
+                    }
+
+                    sliderTrack.innerHTML = ''; // Réinitialiser le contenu
+
+                    // Ajouter les produits au slider
+                    data.products.forEach(product => {
+                        sliderTrack.innerHTML += `
+                            <div class="product-card">
+                                ${product.promo ? '<div class="promo-tag">Promo</div>' : ''}
+                                <img src="${product.image_url}" alt="${product.name}">
+                                <h4>${product.name}</h4>
+                                <p>
+                                    ${product.old_price ? `<del>${product.old_price} €</del>` : ''}
+                                    <span>${product.price} €</span>
+                                </p>
+                            </div>
+                        `;
+                    });
+
+                    // Ajuster la largeur du slider-track
+                    const productsCount = data.products.length;
+                    sliderTrack.style.width = `${productsCount * 25}%`;
+                })
+                .catch(error => console.error('Erreur de chargement des produits:', error));
+        }
+
+        // Fonction pour gérer la navigation
+        function handleNavigation(direction) {
+            if (direction === 'next') {
+                currentPage++;
+            } else if (direction === 'prev' && currentPage > 1) {
+                currentPage--;
+            }
+            loadProducts(currentPage);
+        }
+
+        // Ajout des événements pour les flèches
+        document.getElementById('next').addEventListener('click', () => handleNavigation('next'));
+        document.getElementById('prev').addEventListener('click', () => handleNavigation('prev'));
+
+        // Charger les produits au démarrage
+        loadProducts(currentPage);
+    </script>
+</body>
+</html>

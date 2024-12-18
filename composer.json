@@ -1,0 +1,17 @@
+{
+    "name": "tnaw/site",
+    "autoload": {
+        "psr-4": {
+            "Tnaw\\Site\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "ashleywaynell",
+            "email": "ashleywaynell.tagnenegueko@ynov.com"
+        }
+    ],
+    "require": {
+        "fakerphp/faker": "^1.24"
+    }
+}
